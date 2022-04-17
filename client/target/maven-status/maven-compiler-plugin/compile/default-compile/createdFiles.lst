@@ -1,0 +1,6 @@
+com\ttp\client\controller\SecondaryController.class
+module-info.class
+com\ttp\client\scenes\ClientScene.class
+com\ttp\client\ClientLauncher.class
+com\ttp\client\controller\ConfigController.class
+com\ttp\client\controller\PrimaryController.class
