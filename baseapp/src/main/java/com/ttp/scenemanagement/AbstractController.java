@@ -4,8 +4,7 @@ public abstract class AbstractController {
 
     protected SceneManager sceneManager;
 
-    protected void init() {
-    }
+    protected void init() {}
 
     void setSceneManager(SceneManager sceneManager) {
         this.sceneManager = sceneManager;

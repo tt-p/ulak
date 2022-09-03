@@ -6,24 +6,22 @@ public class User {
 
     private final long id;
     private final Connection con;
-    private String username;
+    private final String username;
+    private boolean isNew;
 
     public User(long id, String username, Connection connection) {
         this.id = id;
         this.username = username;
         this.con = connection;
+        this.isNew = true;
     }
 
-    public long getId() {
-        return id;
+    public void setNewFalse() {
+        isNew = false;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public boolean isNew() {
+        return isNew;
     }
 
     public Connection getConnection() {

@@ -3,8 +3,6 @@ package com.ttp.server.controller;
 import com.ttp.config.MapConfig;
 import com.ttp.scenemanagement.AbstractController;
 import com.ttp.server.net.Server;
-import com.ttp.server.util.ServerEvent;
-import com.ttp.server.util.ServerEventListener;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,7 +13,7 @@ import javafx.scene.control.TreeView;
 
 import java.time.LocalDateTime;
 
-public class HomeController extends AbstractController implements ServerEventListener {
+public class HomeController extends AbstractController {
 
     @FXML
     private Button btLog;
@@ -36,27 +34,19 @@ public class HomeController extends AbstractController implements ServerEventLis
     @Override
     public void init() {
         server = createServer();
-        server.addListener(this);
         server.start();
 
-        sceneManager.getPrimaryStage().setOnCloseRequest(event -> {
-            server.stop();
-        });
+        sceneManager.getPrimaryStage().setOnCloseRequest(event -> server.stop());
     }
 
     private Server createServer() {
         int port = Integer.parseInt(config.getConfigValue("port"));
         int maxUsers = Integer.parseInt(config.getConfigValue("port"));
-        return new Server(port, maxUsers);
-    }
-
-    @Override
-    public void handleServerEvent(ServerEvent event) {
-        log(event.getMessage());
+        return new Server(port, maxUsers, this::log);
     }
 
     private void log(String message) {
-        Platform.runLater(() -> taLog.appendText("%s - %s".formatted(LocalDateTime.now().toString(), message)));
+        Platform.runLater(() -> taLog.appendText("%s - %s%n".formatted(LocalDateTime.now().toString(), message)));
     }
 
     @FXML

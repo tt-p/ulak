@@ -1,0 +1,5 @@
+/.idea/
+
+/baseapp/target/
+/client/target/
+/server/target/

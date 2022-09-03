@@ -52,7 +52,7 @@ public class TCPServerConnection implements Connection {
     public void connect() {
         try {
             socket = serverSocket.accept();
-            socket.setSoTimeout(100);
+            socket.setSoTimeout(25);
         } catch (IOException ex) {
             ex.printStackTrace();
         }

@@ -6,4 +6,5 @@ module ulak.baseapp {
     exports com.ttp.scenemanagement;
     exports com.ttp.config;
     exports com.ttp.net;
+    exports com.ttp.concurrent;
 }
