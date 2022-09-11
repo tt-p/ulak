@@ -12,6 +12,7 @@ import java.net.SocketException;
 import java.util.Queue;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class Client {
@@ -19,7 +20,7 @@ public class Client {
     private String hostname;
     private String username;
     private int port;
-    private Consumer<String> logger;
+    private BiConsumer<String, MessageType> logger;
 
     private Connection connection;
     private ThreadFactory threadFactory = new SimpleDaemonThreadFactory();
@@ -32,7 +33,15 @@ public class Client {
 
     private Queue<String> messageQueue = new LinkedBlockingQueue<>();
 
-    public Client(String hostname, int port, String username, Consumer<String> logger) {
+    public String getUsername() {
+        return username;
+    }
+
+    public Client(String hostname,
+                  int port,
+                  String username,
+                  BiConsumer<String, MessageType> logger
+    ) {
         this.hostname = hostname;
         this.port = port;
         this.username = username;
@@ -45,11 +54,10 @@ public class Client {
 
     public void stop() {
         connection.send(AppProtocol.LEAVE, "");
+        connection.close();
 
         isClientRunning.set(false);
         isClientTerminated.set(true);
-
-        connection.close();
 
         receiverFuture.cancel(true);
         senderFuture.cancel(true);
@@ -79,6 +87,8 @@ public class Client {
         Message message = connection.receive();
         if (message.code() != AppProtocol.OK) {
             connection.close();
+        } else {
+            username = message.message();
         }
     }
 

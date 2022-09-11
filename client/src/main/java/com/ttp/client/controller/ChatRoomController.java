@@ -1,14 +1,19 @@
 package com.ttp.client.controller;
 
 import com.ttp.client.net.Client;
+import com.ttp.client.net.MessageType;
+import com.ttp.client.ui.ChatPaneWrapper;
 import com.ttp.config.MapConfig;
 import com.ttp.scenemanagement.AbstractController;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+
+import static com.ttp.util.JSONUtils.toJSON;
 
 public class ChatRoomController extends AbstractController {
 
@@ -17,7 +22,9 @@ public class ChatRoomController extends AbstractController {
     @FXML
     private TextField tfInput;
     @FXML
-    private TextArea taChat;
+    private HBox hBox;
+
+    private ChatPaneWrapper chatPaneWrapper;
 
     private MapConfig config;
     private Client client;
@@ -31,6 +38,13 @@ public class ChatRoomController extends AbstractController {
         client = createClient();
         client.start();
 
+        tfInput.setStyle("-fx-border-radius: 24 0 0 24; -fx-background-radius: 24 0 0 24;");
+        btSend.setStyle("-fx-border-radius: 0 24 24 0; -fx-background-radius: 0 24 24 0;");
+
+        chatPaneWrapper = new ChatPaneWrapper(hBox.widthProperty(), hBox.heightProperty(), new Insets(10));
+
+        hBox.getChildren().add(chatPaneWrapper.get());
+
         sceneManager.getPrimaryStage().setOnCloseRequest(event -> client.stop());
     }
 
@@ -42,8 +56,8 @@ public class ChatRoomController extends AbstractController {
         return new Client(hostname, port, username, this::log);
     }
 
-    private void log(String message) {
-        Platform.runLater(() -> taChat.appendText("%s%n".formatted(message)));
+    private void log(String message, MessageType messageType) {
+        Platform.runLater(() -> chatPaneWrapper.addMessage(message, messageType));
     }
 
     @FXML
@@ -61,6 +75,7 @@ public class ChatRoomController extends AbstractController {
         tfInput.clear();
         tfInput.requestFocus();
 
+        chatPaneWrapper.addMessage(toJSON(client.getUsername(), input), MessageType.SENT);
         client.sendMessage(input);
     }
 

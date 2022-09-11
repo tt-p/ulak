@@ -8,6 +8,8 @@ public final class ClientScene extends ScenePath {
     public static ScenePath CHAT_ROOM = new ClientScene("chatroom.fxml");
     public static ScenePath CONFIG = new ClientScene("config.fxml");
 
+    public static ScenePath TEST = new ClientScene("test.fxml");
+
     private ClientScene(String path) {
         super(path);
     }

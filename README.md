@@ -1,9 +1,27 @@
 # Ulak
 ## Simple Messaging Application
 
+Practice on:
+* Maven Project
+* JavaFX
+* Concurrency
+* TCP
+
+### How to run
+
+* Create executables for both client side and server side of the project by running below command.
+```
+mvn package
+```
+* ulak_server.jar under target is server side executable file.
+* ulak_client.jar under target is client side executable file.
+
+Run Server:
+`java --module-path %FX_HOME%\lib --add-modules javafx.controls,javafx.graphics,javafx.fxml,javafx.base -jar server/target/ulak_server.jar`
+
+Run Client:
+`java --module-path %FX_HOME%\lib --add-modules javafx.controls,javafx.graphics,javafx.fxml,javafx.base -jar client/target/ulak_client.jar`
+
 ## Screenshots
 
-![App1](images/1.png)
-![App2](images/2.png)
-![Config1](images/3.png)
-![Config2](images/4.png)
+![SS](images/ss.png)

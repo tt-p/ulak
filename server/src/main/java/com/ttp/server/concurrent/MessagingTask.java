@@ -9,6 +9,8 @@ import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
+import static com.ttp.util.JSONUtils.toJSON;
+
 public class MessagingTask extends HoldTerminateRunnable {
 
     private final Queue<User> registeredUserQueue;
@@ -36,7 +38,7 @@ public class MessagingTask extends HoldTerminateRunnable {
     private void welcomeNewUser(User user) {
         if (user.isNew()) {
             logger.accept("User %s joined the chat room".formatted(user.toString()));
-            sendAll(AppProtocol.NOTIFY_JOIN, user.toString());
+            sendAllExceptSender(AppProtocol.NOTIFY_JOIN, user.toString(), user);
             user.setNewFalse();
         }
     }
@@ -47,12 +49,12 @@ public class MessagingTask extends HoldTerminateRunnable {
         if (message != null) {
             switch (message.code()) {
                 case TEXT -> {
-                    sendAll(AppProtocol.TEXT, "%s-%s".formatted(user.toString(), message.message()));
+                    sendAllExceptSender(AppProtocol.TEXT, toJSON(user.toString(), message.message()), user);
                     logger.accept("User %s sent message".formatted(user.toString()));
                 }
                 case LEAVE -> {
                     registeredUserQueue.remove(user);
-                    sendAll(AppProtocol.NOTIFY_LEAVE, user.toString());
+                    sendAllExceptSender(AppProtocol.NOTIFY_LEAVE, user.toString(), user);
                     logger.accept("User %s leaved the chat room".formatted(user.toString()));
                 }
                 default -> throw new RuntimeException("Invalid state");
@@ -60,8 +62,9 @@ public class MessagingTask extends HoldTerminateRunnable {
         }
     }
 
-    private void sendAll(AppProtocol code, String message) {
+    private void sendAllExceptSender(AppProtocol code, String message, User sender) {
         registeredUserQueue.stream()
+                .filter(user -> !user.equals(sender))
                 .map(User::getConnection)
                 .forEach(con -> con.send(code, message));
     }

@@ -43,7 +43,7 @@ public class RegisterTask extends HoldTerminateRunnable {
                 String username = message.message();
                 int id = totalUserCount.incrementAndGet();
                 User user = new User(id, username, connection);
-                connection.send(AppProtocol.OK, "");
+                connection.send(AppProtocol.OK, user.toString());
                 logger.accept("User %s is registered".formatted(user.toString()));
                 registeredUserQueue.add(user);
             } else {

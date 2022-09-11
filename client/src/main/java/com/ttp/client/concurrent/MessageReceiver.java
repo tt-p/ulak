@@ -1,24 +1,27 @@
 package com.ttp.client.concurrent;
 
+import com.ttp.client.net.MessageType;
 import com.ttp.concurrent.HoldTerminateRunnable;
 import com.ttp.net.Connection;
 import com.ttp.net.Message;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class MessageReceiver extends HoldTerminateRunnable {
 
     private AtomicBoolean isReceiving;
     private Connection connection;
-    private Consumer<String> logger;
+    private BiConsumer<String, MessageType> logger;
 
     public MessageReceiver(
             AtomicBoolean isRunning,
             AtomicBoolean isTerminated,
             AtomicBoolean isReceiving,
             Connection connection,
-            Consumer<String> logger
+            BiConsumer<String, MessageType> logger
+
     ) {
         super(isRunning, isTerminated);
         this.isReceiving = isReceiving;
@@ -33,16 +36,15 @@ public class MessageReceiver extends HoldTerminateRunnable {
             if (message != null) {
                 switch (message.code()) {
                     case TEXT -> {
-                        int indexOfText = message.message().indexOf('-');
-                        String username = message.message().substring(0, indexOfText);
-                        String text = message.message().substring(indexOfText+1);
-                        logger.accept("%s: %s".formatted(username, text));
+                        logger.accept(message.message(), MessageType.RECEIVED);
                     }
                     case NOTIFY_JOIN -> {
-                        logger.accept("User %s joined the chat room".formatted(message.message()));
+                        logger.accept(
+                                "User %s joined the chat room".formatted(message.message()), MessageType.NOTIFICATION);
                     }
                     case NOTIFY_LEAVE -> {
-                        logger.accept("User %s leaved the chat room".formatted(message.message()));
+                        logger.accept(
+                                "User %s leaved the chat room".formatted(message.message()), MessageType.NOTIFICATION);
                     }
                     default -> throw new RuntimeException("Invalid state");
                 }

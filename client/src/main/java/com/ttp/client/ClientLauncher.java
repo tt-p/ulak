@@ -7,6 +7,7 @@ import com.ttp.config.Config;
 import com.ttp.config.ConfigFile;
 import com.ttp.config.MapConfig;
 import com.ttp.lanucher.Launcher;
+import com.ttp.scenemanagement.ScenePath;
 import javafx.stage.Stage;
 
 import java.nio.file.Path;

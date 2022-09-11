@@ -8,6 +8,8 @@ import javafx.util.Pair;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,7 +38,11 @@ public class SceneManagerImpl extends SceneManagerBase {
     private Pair<Scene, AbstractController> loadValue(ScenePath scenePath) {
         return map.computeIfAbsent(scenePath.getPath(), path -> {
             try {
-                FXMLLoader loader = new FXMLLoader(new URL("%s/%s".formatted(resourceUrl, path)));
+                URL url = new URL("%s%s".formatted(
+                        resourceUrl,
+                        path
+                ));
+                FXMLLoader loader = new FXMLLoader(url);
                 Parent parent = loader.load();
                 AbstractController controller = loader.getController();
                 if (controller != null) {
