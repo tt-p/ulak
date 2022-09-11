@@ -11,7 +11,7 @@ Practice on:
 
 * Install javafx sdk
 * Add env variable FX_HOME with javafx sdk
-* Create package project with `mvn package`
+* Package project with `mvn package`
 * Start the Server with `startServer.bat`
 * Start the Server with `startClient.bat`
 
