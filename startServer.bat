@@ -1,0 +1,1 @@
+start javaw --module-path %FX_HOME%\lib --add-modules javafx.controls,javafx.graphics,javafx.fxml,javafx.base -jar server/target/ulak_server.jar &
